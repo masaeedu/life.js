@@ -23,6 +23,7 @@ const cw = (bw * n) + (p * 2) + 1;
 const canvas = document.createElement('canvas');
 canvas.setAttribute("width", cw);
 canvas.setAttribute("height", cw);
+canvas.style = "cursor:pointer"
 document.body.appendChild(canvas);
 
 const bounds = canvas.getBoundingClientRect();
@@ -82,7 +83,7 @@ function render(timestamp) {
 
   if (((timestamp - last) / 1000) >= (1 / fpsCap)) {
     ctx.beginPath();
-    for (var i = 0; i < n * n; i ++) {
+    for (var i = 0; i < n * n; i++) {
       drawCell(i, cells[i]);
     }
     ctx.stroke();
