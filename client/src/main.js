@@ -1,7 +1,7 @@
 import io from 'socket.io-client'
 import { Point, getCoordinatesOfIndex, getIndexOfCoordinates } from '../../shared/coordinates'
 
-var socket = io('ws://localhost:3000')
+var socket = io()
 
 let cells = []
 socket.on('update', (update) => {
@@ -24,8 +24,13 @@ const canvas = document.createElement('canvas');
 canvas.setAttribute("width", cw);
 canvas.setAttribute("height", cw);
 
+
 const container = document.getElementById('grid')
 container.appendChild(canvas)
+
+canvas.style = "cursor:pointer"
+document.body.appendChild(canvas);
+
 
 const bounds = canvas.getBoundingClientRect();
 const ctx = canvas.getContext("2d");
@@ -84,7 +89,7 @@ function render(timestamp) {
 
   if (((timestamp - last) / 1000) >= (1 / fpsCap)) {
     ctx.beginPath();
-    for (var i = 0; i < n * n; i ++) {
+    for (var i = 0; i < n * n; i++) {
       drawCell(i, cells[i]);
     }
     ctx.stroke();
