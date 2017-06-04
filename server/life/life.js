@@ -18,15 +18,15 @@ export function game(n) {
             [x - 1, y + 1],
             [x, y + 1],
             [x + 1, y + 1]
-        ];
+        ]
         return neighbors.filter(pair => {
             const [x, y] = pair
             return cells[n * x + y] && inBounds(x, y)
-        }).length;
+        }).length
     }
 
     function inBounds(x, y) {
-        const size = n * n;
+        const size = n * n
         return (x >= 0 && x < size) && (y >= 0 && y < size)
     }
 

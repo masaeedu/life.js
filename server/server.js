@@ -24,9 +24,7 @@ function update() {
 }
 
 function renderDataToJSON() {
-    return JSON.stringify({
-        cells
-    })
+    return JSON.stringify({ cells })
 }
 
 function togglePause() {
@@ -46,7 +44,7 @@ app.get('/', function (req, res) {
 
 app.use('/static', express.static(path.resolve(__dirname, '../client/build')))
 
-io.on('connection', function(socket) {
+io.on('connection', function (socket) {
     console.log('a user connected')
 
     socket.on('message', (m) => console.log(m))
