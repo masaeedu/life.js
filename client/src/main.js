@@ -1,7 +1,7 @@
 import io from 'socket.io-client'
 import { Point, getCoordinatesOfIndex, getIndexOfCoordinates } from '../../shared/coordinates'
 
-var socket = io('ws://localhost:3000')
+var socket = io()
 
 let cells = []
 socket.on('update', (update) => {
