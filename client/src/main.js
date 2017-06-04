@@ -3,10 +3,11 @@ import { Point, getCoordinatesOfIndex, getIndexOfCoordinates } from '../../share
 
 var socket = io('ws://localhost:3000')
 
-let cells = []
+let cells = new Set()
 socket.on('update', (update) => {
   const updateData = JSON.parse(update)
-  cells = updateData.cells
+  cells.clear()
+  cells = new Set([...updateData.cells])
 })
 
 // LOGICAL SIZE
@@ -84,7 +85,7 @@ function render(timestamp) {
   if (((timestamp - last) / 1000) >= (1 / fpsCap)) {
     ctx.beginPath();
     for (var i = 0; i < n * n; i++) {
-      drawCell(i, cells[i]);
+      drawCell(i, cells.has(i));
     }
     ctx.stroke();
     last = timestamp;
