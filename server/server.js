@@ -57,7 +57,7 @@ io.on('connection', function (socket) {
     socket.emit('start')
 })
 
-setInterval(() => gol(cells).forEach(i => dirty.add(i)), 100)
+setInterval(() => { if (!paused) gol(cells).forEach(i => dirty.add(i)) }, 100)
 
 http.listen(3000, function () {
     console.log('Listening on port 3000.')
