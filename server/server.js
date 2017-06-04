@@ -17,8 +17,9 @@ const cells = new Array(n * n)
 const gol = game(n)
 
 function update() {
-    dirty.forEach(i => cells[i] = !cells[i])
     const updateData = renderDataToJSON()
+    dirty.forEach(i => cells[i] = !cells[i])
+    dirty.clear()
     return updateData
 }
 
@@ -56,7 +57,7 @@ io.on('connection', function (socket) {
     socket.emit('start')
 })
 
-setInterval(() => gol(cells).forEach(dirty.add.bind(dirty)), 100)
+setInterval(() => gol(cells).forEach(i => dirty.add(i)), 100)
 
 http.listen(3000, function () {
     console.log('Listening on port 3000.')
