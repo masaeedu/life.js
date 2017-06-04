@@ -15,6 +15,7 @@ const cells = new Array(n * n)
     .fill(undefined)
     .map(() => Math.round(Math.random()))
 const gol = game(n)
+setInterval(() => { if (!paused) gol(cells).forEach(i => dirty.add(i)) }, 100)
 
 function update() {
     const updateData = renderDataToJSON()
@@ -56,8 +57,6 @@ io.on('connection', function (socket) {
     }, 100)
     socket.emit('start')
 })
-
-setInterval(() => { if (!paused) gol(cells).forEach(i => dirty.add(i)) }, 100)
 
 http.listen(3000, function () {
     console.log('Listening on port 3000.')
