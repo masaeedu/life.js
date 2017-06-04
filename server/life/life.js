@@ -4,7 +4,10 @@
 // expose a function that creates a grid
 import { Point, getCoordinatesOfIndex, getIndexOfCoordinates } from '../../shared/coordinates'
 
-function game(n) {
+export function game(n) {
+    const getCoordinates = getCoordinatesOfIndex(n)
+    const getIndex = getIndexOfCoordinates(n)
+
     function liveNeighbors({ x, y }, cells) {
         const neighbors = [
             [x - 1, y - 1],
@@ -44,52 +47,4 @@ function game(n) {
         }
         return dirty
     }
-}
-
-// the size of the grid
-const n = 100
-let paused = false
-
-const getCoordinates = getCoordinatesOfIndex(n)
-const getIndex = getIndexOfCoordinates(n)
-
-
-const cells = new Array(n * n).fill(0).map(() => {
-    var r = Math.random()
-    return Math.round(r)
-})
-
-
-
-export function evolve() {
-    if (!paused) {
-        for (var i = 0; i < n * n; i++) {
-            const point = getCoordinates(i)
-            const nextState = checkForLife(cells[i], point)
-            if (cells[i] !== nextState) dirty.add(i)
-        }
-    }
-}
-
-export function update() {
-    const updateData = renderDataToJSON()
-    dirty.forEach(i => cells[i] = !cells[i])
-    dirty.clear()
-    return updateData
-}
-
-export function renderDataToJSON() {
-    return JSON.stringify({
-        cells
-    })
-}
-
-export function togglePause() {
-    paused = !paused
-}
-
-export function applyInteraction(interactionEvent) {
-    console.log(interactionEvent)
-    const event = JSON.parse(interactionEvent)
-    if (cells[event.index] === event.erasing) dirty.add(event.index)
 }

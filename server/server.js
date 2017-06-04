@@ -1,4 +1,4 @@
-import { togglePause, evolve, renderSetToJSON, applyInteraction, clearRenderSet, update } from './life/life'
+import { game } from './life/life'
 
 var path = require('path')
 var express = require('express')
@@ -7,6 +7,38 @@ var express = require('express')
 var app = express()
 var http = require('http').Server(app)
 var io = require('socket.io')(http)
+
+const n = 100
+let paused = false
+
+const cells = new Array(n * n)
+    .fill(undefined)
+    .map(() => Math.round(Math.random()))
+const gol = game(n)
+
+function update() {
+    const dirty = gol(cells)
+    dirty.forEach(i => cells[i] = !cells[i])
+    const updateData = renderDataToJSON()
+    return updateData
+}
+
+function renderDataToJSON() {
+    return JSON.stringify({
+        cells
+    })
+}
+
+function togglePause() {
+    paused = !paused
+}
+
+function applyInteraction(interactionEvent) {
+    console.log(interactionEvent)
+    const event = JSON.parse(interactionEvent)
+    if (cells[event.index] === event.erasing) dirty.add(event.index)
+}
+
 
 app.get('/', function (req, res) {
     res.sendFile(path.resolve(__dirname, '../client/views/index.html'))
