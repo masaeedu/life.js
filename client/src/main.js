@@ -1,3 +1,8 @@
+import io from 'socket.io-client'
+
+var socket = io('ws://localhost:3000')
+socket.emit('message', 'test')
+
 // LOGICAL SIZE
 const n = 100;
 
