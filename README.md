@@ -9,5 +9,6 @@ It's alive!
 
 ## Building
 `npm run build`
+
 `npm run build:watch`
 
