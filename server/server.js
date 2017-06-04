@@ -10,14 +10,13 @@ var io = require('socket.io')(http)
 
 const n = 100
 let paused = false
-
+const dirty = new Set()
 const cells = new Array(n * n)
     .fill(undefined)
     .map(() => Math.round(Math.random()))
 const gol = game(n)
 
 function update() {
-    const dirty = gol(cells)
     dirty.forEach(i => cells[i] = !cells[i])
     const updateData = renderDataToJSON()
     return updateData
@@ -57,7 +56,7 @@ io.on('connection', function (socket) {
     socket.emit('start')
 })
 
-setInterval(() => evolve(), 100)
+setInterval(() => gol(cells).forEach(dirty.add.bind(dirty)), 100)
 
 http.listen(3000, function () {
     console.log('Listening on port 3000.')

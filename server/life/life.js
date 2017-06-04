@@ -39,7 +39,6 @@ export function game(n) {
 
     return function update(cells) {
         const dirty = new Set()
-        const cells = Object.freeze(cells)
         for (var i = 0; i < n * n; i++) {
             const point = getCoordinates(i)
             const nextState = checkForLife(cells[i], point, cells)
