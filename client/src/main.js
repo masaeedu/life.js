@@ -101,7 +101,7 @@ canvas.onmousemove = interact;
 canvas.onmousedown = interact;
 
 // GOL evolution
-(function evolve() {
+function evolve() {
   if (!paused) {
     for (var i = 0; i < n * n; i++) {
       const [x, y] = getCoordinatesOfIndex(i);
@@ -110,21 +110,23 @@ canvas.onmousedown = interact;
     }
   }
   setTimeout(evolve, 100);
-})()
+}
+evolve();
 
 /// WORK CONSUMERS
 // Grid update
-(function update() {
+function update() {
   dirty.forEach(i => { cells[i] = !cells[i]; renderDirty.add(i) });
   dirty.clear();
   setTimeout(update, 100);
-})();
+}
+update();
 
 // Canvas update
 let fpsCap = 30;
 let last;
 
-(function render(timestamp) {
+function render(timestamp) {
   if (!last) last = timestamp;
 
   if (((timestamp - last) / 1000) >= (1 / fpsCap)) {
@@ -138,4 +140,5 @@ let last;
   }
 
   requestAnimationFrame(render);
-})();
+}
+render();
