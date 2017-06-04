@@ -39,12 +39,12 @@ function render(timestamp) {
 
   if (((timestamp - last) / 1000) >= (1 / fpsCap)) {
     ctx.beginPath()
-    for (let i of dirty) {
+    for (let i of renderDirty) {
       drawCell(i, cells[i])
     }
     ctx.stroke()
     last = timestamp
-    dirty = new Set()
+    renderDirty = new Set()
   }
 
   requestAnimationFrame(render)
@@ -92,6 +92,7 @@ function pixelToCell(x, y) {
 }
 
 let dirty = new Set()
+let renderDirty = new Set()
 function getCanvasPos(evt) {
   return [evt.clientX - bounds.left, evt.clientY - bounds.top]
 }
@@ -114,7 +115,8 @@ function stepLife() {
       if (cells[i] !== alive) dirty.add(i)
     }
   }
-  dirty.forEach(i => cells[i] = !cells[i])
+  dirty.forEach(i => { cells[i] = !cells[i]; renderDirty.add(i) })
+  dirty.clear()
   setTimeout(stepLife, 100)
 }
 
