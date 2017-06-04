@@ -42,6 +42,11 @@ pause.onclick = function () {
   socket.emit('pause')
 };
 
+const randomFill = document.getElementById('random-fill')
+randomFill.onclick = function() {
+  socket.emit('randomFill')
+}
+
 function drawCell(i, fill) {
   const { x, y } = getCoordinates(i);
   const coords = [p + (x * bw), p + (y * bw)];
