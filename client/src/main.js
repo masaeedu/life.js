@@ -44,7 +44,7 @@ function render(timestamp) {
     }
     ctx.stroke()
     last = timestamp
-    dirty = []
+    dirty = new Set()
   }
 
   requestAnimationFrame(render)
@@ -91,16 +91,14 @@ function pixelToCell(x, y) {
   return [Math.floor((x - p) / bw), Math.floor((y - p) / bw)]
 }
 
-let dirty = []
-let intervention = new Set()
-
+let dirty = new Set()
 function getCanvasPos(evt) {
   return [evt.clientX - bounds.left, evt.clientY - bounds.top]
 }
 
 function interact(e) {
   let i = getIndexOfCoordinates(...pixelToCell(...getCanvasPos(e)))
-  if (e.buttons) intervention.add(i)
+  if (e.buttons && cells[i] === erasing) dirty.add(i)
   return e
 }
 canvas.onmousemove = interact
@@ -109,13 +107,11 @@ canvas.onmousedown = interact
 let paused = false
 
 function stepLife() {
-  dirty = Array.from(intervention).filter(i => cells[i] === erasing)
-  intervention = new Set()
   if (!paused) {
     for (var i = 0; i < n * n; i++) {
       const [x, y] = getCoordinatesOfIndex(i)
       const alive = checkForLife(cells[i], x, y)
-      if (cells[i] !== alive) dirty.push(i)
+      if (cells[i] !== alive) dirty.add(i)
     }
   }
   dirty.forEach(i => cells[i] = !cells[i])
