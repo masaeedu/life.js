@@ -23,7 +23,9 @@ const cw = (bw * n) + (p * 2) + 1;
 const canvas = document.createElement('canvas');
 canvas.setAttribute("width", cw);
 canvas.setAttribute("height", cw);
-document.body.appendChild(canvas);
+
+const container = document.getElementById('grid')
+container.appendChild(canvas)
 
 const bounds = canvas.getBoundingClientRect();
 const ctx = canvas.getContext("2d");
