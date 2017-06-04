@@ -1,10 +1,14 @@
 import io from 'socket.io-client'
+import { Point, getCoordinatesOfIndex, getIndexOfCoordinates } from '../../shared/coordinates'
 
 var socket = io('ws://localhost:3000')
 socket.emit('message', 'test')
 
 // LOGICAL SIZE
 const n = 100;
+
+const getCoordinates = getCoordinatesOfIndex(n);
+const getIndex = getIndexOfCoordinates(n);
 
 // PIXEL SIZES
 const bw = 5;
@@ -31,16 +35,8 @@ pause.onclick = function() {
   paused = !paused;
 };
 
-function getCoordinatesOfIndex(i) {
-  return [Math.floor(i / n), i % n];
-}
-
-function getIndexOfCoordinates(x, y) {
-  return x * n + y;
-}
-
 function drawCell(i, fill) {
-  const [x, y] = getCoordinatesOfIndex(i, [n, n]);
+  const {x, y} = getCoordinates(i);
   const coords = [p + (x * bw), p + (y * bw)];
   const f = (fill ? ctx.fillRect : (...args) => {
     ctx.clearRect(...args);
@@ -55,7 +51,7 @@ const cells = new Array(n * n).fill(0).map(() => {
   return Math.round(r);
 });
 
-function liveNeighbors(x, y) {
+function liveNeighbors({x, y}) {
   const neighbors = [
     [x - 1, y - 1],
     [x, y - 1],
@@ -68,37 +64,37 @@ function liveNeighbors(x, y) {
   ];
   return neighbors.filter(pair => {
     const [x, y] = pair
-    return cells[n * x + y] && inBounds(pair)
+    return cells[n * x + y] && inBounds(x, y)
   }).length;
 }
 
-function inBounds(coordPair) {
-  const [x, y] = coordPair;
+function inBounds(x, y) {
   const size = n * n;
   return (x >= 0 && x < size) && (y >= 0 && y < size);
 }
 
-function checkForLife(cellState, x, y) {
-  const neighbors = liveNeighbors(x, y);
+function checkForLife(cellState, point) {
+  const neighbors = liveNeighbors(point);
   if (cellState && (neighbors === 2 || neighbors === 3)) return true;
   if (!cellState && (neighbors === 3)) return true;
   return false;
 }
 
-function pixelToCell(x, y) {
-  return [Math.floor((x - p) / bw), Math.floor((y - p) / bw)];
+function pixelToCell(point) {
+  return Point(Math.floor((point.x - p) / bw), Math.floor((point.y - p) / bw));
 }
 
 let dirty = new Set();
 let renderDirty = new Set();
+
 function getCanvasPos(evt) {
-  return [evt.clientX - bounds.left, evt.clientY - bounds.top];
+  return Point(evt.clientX - bounds.left, evt.clientY - bounds.top);
 }
 
 /// WORK PRODUCERS
 // User interaction
 function interact(e) {
-  let i = getIndexOfCoordinates(...pixelToCell(...getCanvasPos(e)));
+  let i = getIndex(pixelToCell(getCanvasPos(e)));
   if (e.buttons && cells[i] === erasing) dirty.add(i);
   return e;
 }
@@ -109,8 +105,8 @@ canvas.onmousedown = interact;
 function evolve() {
   if (!paused) {
     for (var i = 0; i < n * n; i++) {
-      const [x, y] = getCoordinatesOfIndex(i);
-      const alive = checkForLife(cells[i], x, y);
+      const point = getCoordinates(i);
+      const alive = checkForLife(cells[i], point);
       if (cells[i] !== alive) dirty.add(i);
     }
   }
