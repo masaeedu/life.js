@@ -15,19 +15,16 @@ export function LifeUI(size) {
     }
 
     const config = {
+        size,
         fpsCap: 30,
         cellWidth: 5,
-        inset: 10.5,
+        inset: 10,
         getIndex: getIndexOfCoordinates(size),
         getCoordinates: getCoordinatesOfIndex(size),
         get canvasWidth() {
-            return (this.cellWidth * size) + (inset * 2) + 1
+            return (this.cellWidth * this.size) + (this.inset * 2) + 1
         }
     }
-
-    const cellWidth = 5
-    const inset = 10.5
-    const canvasWidth = (cellWidth * size) + (inset * 2) + 1
 
     const { context, bounds } = setupUI(config)
 
@@ -39,7 +36,6 @@ export function LifeUI(size) {
         if (!lastTime) lastTime = timestamp
 
         if (((timestamp - lastTime) / 1000) >= (1 / config.fpsCap)) {
-            console.log('rendering')
             context.beginPath()
             for (let i = 0; i < size * size; i++) {
                 drawCell(i, lifeState.cells.has(i))
@@ -60,19 +56,18 @@ export function LifeUI(size) {
 }
 
 function setupUI(config) {
-    const { bounds, context, canvas } = setupCanvas(config.canvasWidth)
+    const { bounds, context, canvas } = setupCanvas(config)
     setupInteraction(config, bounds, canvas)
     setupButtons()
     return { bounds, context }
 }
 
-function setupCanvas(width) {
-    const canvas = document.createElement('canvas')
-    const container = document.getElementById('life-container')
-    canvas.setAttribute('width', width)
-    canvas.setAttribute('height', width)
-    canvas.style = "cursor:pointer"
-    container.appendChild(canvas)
+function setupCanvas(config) {
+    const wrapper = document.getElementById('sim-wrapper')
+    wrapper.style.height = `${config.canvasWidth}px`
+    const canvas = document.getElementById('sim-canvas')
+    canvas.setAttribute('width', config.canvasWidth)
+    canvas.setAttribute('height', config.canvasWidth)
 
     return {
         context: canvas.getContext('2d'),

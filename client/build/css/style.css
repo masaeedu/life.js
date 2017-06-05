@@ -1,7 +1,23 @@
-div#grid {
+/*div#grid-container {
     float: left
+}*/
+
+body {
+    box-sizing: border-box
 }
 
-div#chat {
-    float: right
+div.canvas-wrapper {
+    position: relative;
+    height: 100px;
 }
+
+canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: pointer;
+}
+/*
+div#chat-container {
+    float: right
+}*/
