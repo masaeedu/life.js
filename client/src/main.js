@@ -1,144 +1,28 @@
-// LOGICAL SIZE
-const n = 100;
+import io from 'socket.io-client'
 
-// PIXEL SIZES
-const bw = 5;
-const p = 10.5;
-const cw = (bw * n) + (p * 2) + 1;
+import { Actions } from './actions'
+import { LifeUI } from './lifeUI'
+import { ChatUI } from './chatUI'
 
-const canvas = document.createElement('canvas');
-canvas.setAttribute("width", cw);
-canvas.setAttribute("height", cw);
-document.body.appendChild(canvas);
+const socket = io()
 
-const bounds = canvas.getBoundingClientRect();
-const ctx = canvas.getContext("2d");
+function run(size) {
+  Actions.initialize(socket, () => {
+    const lifeUI = LifeUI(size)
+    const chatUI = ChatUI()
 
-const erase = document.getElementById('erase');
-let erasing = false;
-erase.onchange = function(e) {
-	erasing = e.target.checked;
-};
+    socket.on('update', event => {
+      const updateData = JSON.parse(event)
+      lifeUI.updateCells(updateData.cells)
+    })
 
-const pause = document.getElementById('pause');
-let paused = false;
-pause.onclick = function() {
-  paused = !paused;
-};
+    socket.on('message', event => {
+      const message = JSON.parse(event)
+      chatUI.addMessage(message)
+    })
 
-function getCoordinatesOfIndex(i) {
-  return [Math.floor(i / n), i % n];
+    lifeUI.renderLoop()
+  })
 }
 
-function getIndexOfCoordinates(x, y) {
-  return x * n + y;
-}
-
-function drawCell(i, fill) {
-  const [x, y] = getCoordinatesOfIndex(i, [n, n]);
-  const coords = [p + (x * bw), p + (y * bw)];
-  const f = (fill ? ctx.fillRect : (...args) => {
-    ctx.clearRect(...args);
-    ctx.rect(...args);
-  }).bind(ctx);
-  f(...coords, bw, bw);
-}
-
-/// GOL ALGORITHM
-const cells = new Array(n * n).fill(0).map(() => {
-  var r = Math.random();
-  return Math.round(r);
-});
-
-function liveNeighbors(x, y) {
-  const neighbors = [
-    [x - 1, y - 1],
-    [x, y - 1],
-    [x + 1, y - 1],
-    [x - 1, y],
-    [x + 1, y],
-    [x - 1, y + 1],
-    [x, y + 1],
-    [x + 1, y + 1]
-  ];
-  return neighbors.filter(pair => {
-    const [x, y] = pair
-    return cells[n * x + y] && inBounds(pair)
-  }).length;
-}
-
-function inBounds(coordPair) {
-  const [x, y] = coordPair;
-  const size = n * n;
-  return (x >= 0 && x < size) && (y >= 0 && y < size);
-}
-
-function checkForLife(cellState, x, y) {
-  const neighbors = liveNeighbors(x, y);
-  if (cellState && (neighbors === 2 || neighbors === 3)) return true;
-  if (!cellState && (neighbors === 3)) return true;
-  return false;
-}
-
-function pixelToCell(x, y) {
-  return [Math.floor((x - p) / bw), Math.floor((y - p) / bw)];
-}
-
-let dirty = new Set();
-let renderDirty = new Set();
-function getCanvasPos(evt) {
-  return [evt.clientX - bounds.left, evt.clientY - bounds.top];
-}
-
-/// WORK PRODUCERS
-// User interaction
-function interact(e) {
-  let i = getIndexOfCoordinates(...pixelToCell(...getCanvasPos(e)));
-  if (e.buttons && cells[i] === erasing) dirty.add(i);
-  return e;
-}
-canvas.onmousemove = interact;
-canvas.onmousedown = interact;
-
-// GOL evolution
-function evolve() {
-  if (!paused) {
-    for (var i = 0; i < n * n; i++) {
-      const [x, y] = getCoordinatesOfIndex(i);
-      const alive = checkForLife(cells[i], x, y);
-      if (cells[i] !== alive) dirty.add(i);
-    }
-  }
-  setTimeout(evolve, 100);
-}
-evolve();
-
-/// WORK CONSUMERS
-// Grid update
-function update() {
-  dirty.forEach(i => { cells[i] = !cells[i]; renderDirty.add(i) });
-  dirty.clear();
-  setTimeout(update, 100);
-}
-update();
-
-// Canvas update
-let fpsCap = 30;
-let last;
-
-function render(timestamp) {
-  if (!last) last = timestamp;
-
-  if (((timestamp - last) / 1000) >= (1 / fpsCap)) {
-    ctx.beginPath();
-    for (let i of renderDirty) {
-      drawCell(i, cells[i]);
-    }
-    ctx.stroke();
-    last = timestamp;
-    renderDirty = new Set();
-  }
-
-  requestAnimationFrame(render);
-}
-render();
+socket.on('start', run)

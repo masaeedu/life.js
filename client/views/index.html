@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Life</title>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+    <div id="life-container">
+        <div class="canvas-wrapper" id="sim-wrapper">
+            <canvas id="grid-canvas"></canvas>
+            <canvas id="sim-canvas"></canvas>
+        </div>
+        <button id="pause">Pause</button>
+        <label>Erase:<input id="erase" type="checkbox" /></label>
+        <button id="random-fill">Random Fill</button>
+        <button id="clear">Clear</button>
+        <br>
+        <label>Fill Density:<input id="density" type="range" min="0" max="1" step="0.05"></label>
+    </div>
+    <div id="chat-container">
+        <div class="messages">
+            <ol id="message-list"></ol>
+        </div>
+        <div class="sender">
+            <label>Name: <input type="text" id="name"></label>
+            <label>Message: <input type="text" id="message-input"></label>
+            <button id="send">Send</button>
+        </div>
+    </div>
+    <script src="static/bundle.js"></script>
+    <script src="http://localhost:35729/livereload.js"></script>
+</body>
+</html>
