@@ -21,7 +21,7 @@ function until (cond, action) {
 
 function randomCells (filledFraction) {
     const result = new Set()
-    const fullEnough = () => result.length >= ((n * n) * filledFraction)
+    const fullEnough = () => result.size >= ((n * n) * filledFraction)
     until(fullEnough, () => result.add(Math.floor((n * n) * Math.random())))
     return result
 }
