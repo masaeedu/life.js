@@ -1,4 +1,4 @@
-import { pipe } from 'ramda'
+import { pipe, range } from 'ramda'
 
 import { Actions } from './actions'
 import { Point, getCoordinatesOfIndex, getIndexOfCoordinates } from '../../shared/coordinates'
@@ -65,6 +65,13 @@ function setupUI(config) {
 function setupCanvas(config) {
     const wrapper = document.getElementById('sim-wrapper')
     wrapper.style.height = `${config.canvasWidth}px`
+
+    const gridCanvas = document.getElementById('grid-canvas')
+    gridCanvas.setAttribute('width', config.canvasWidth)
+    gridCanvas.setAttribute('height', config.canvasWidth)
+
+    strokeGrid(config, gridCanvas.getContext('2d'))
+
     const canvas = document.getElementById('sim-canvas')
     canvas.setAttribute('width', config.canvasWidth)
     canvas.setAttribute('height', config.canvasWidth)
@@ -74,6 +81,19 @@ function setupCanvas(config) {
         bounds: canvas.getBoundingClientRect(),
         canvas
     }
+}
+
+function strokeGrid({size, inset, cellWidth, canvasWidth}, context) {
+    context.strokeStyle = "#4d4d4d"
+    context.beginPath()
+    range(0, size + 1).forEach(i => {
+        let loc = i * cellWidth + inset + 0.5
+        context.moveTo(loc, inset)
+        context.lineTo(loc, canvasWidth - inset)
+        context.moveTo(inset, loc)
+        context.lineTo(canvasWidth - inset, loc)
+    })
+    context.stroke()
 }
 
 function setupInteraction({ inset, cellWidth, getIndex }, bounds, canvas) {
