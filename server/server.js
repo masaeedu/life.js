@@ -71,9 +71,9 @@ io.on('connection', function (socket) {
     socket.on('message', (m) => console.log(m))
     socket.on('interaction', applyInteraction)
     socket.on('pause', togglePause)
-    socket.on('randomFill', () => {
-        //TODO: Make this configurable in the UI
-        cells = randomCells(0.5)
+    socket.on('randomFill', (density) => {
+        console.log(density)
+        cells = randomCells(density)
     })
     socket.on('clear', () => cells.clear())
     setInterval(() => {

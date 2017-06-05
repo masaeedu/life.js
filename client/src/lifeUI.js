@@ -5,7 +5,8 @@ import { Point, getCoordinatesOfIndex, getIndexOfCoordinates } from '../../share
 
 const lifeState = {
     erasing: false,
-    cells: new Set()
+    cells: new Set(),
+    fillDensity: 0.5
 }
 
 export function LifeUI(size) {
@@ -133,12 +134,14 @@ function setupButtons() {
     const pause = document.getElementById('pause')
     const randomFill = document.getElementById('random-fill')
     const clear = document.getElementById('clear')
+    const fillDensity = document.getElementById('density')
     erase.onchange = function (event) {
         lifeState.erasing = event.target.checked
     }
     pause.onclick = Actions.pause
-    randomFill.onclick = Actions.randomFill
+    randomFill.onclick = () => Actions.randomFill(lifeState.fillDensity)()
     clear.onclick = Actions.clear
+    fillDensity.onchange = (event) => { lifeState.fillDensity = parseFloat(event.target.value) }
 }
 
 const CellDrawer = ({ inset, cellWidth, getCoordinates }, context) => (index, cellState) => {
