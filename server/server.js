@@ -74,6 +74,9 @@ io.on('connection', function (socket) {
         cells = randomCells(density)
     })
     socket.on('clear', () => cells.clear())
+    socket.on('message', (message) => {
+        socket.emit('message', message)
+    })
     setInterval(() => {
         const updateData = update()
         socket.emit('update', updateData)

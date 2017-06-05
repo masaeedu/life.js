@@ -20,6 +20,16 @@
         <br>
         <label>Fill Density:<input id="density" type="range" min="0" max="1" step="0.05"></label>
     </div>
+    <div id="chat-container">
+        <div class="messages">
+            <ol id="message-list"></ol>
+        </div>
+        <div class="sender">
+            <label>Name: <input type="text" id="name"></label>
+            <label>Message: <input type="text" id="message-input"></label>
+            <button id="send">Send</button>
+        </div>
+    </div>
     <script src="static/bundle.js"></script>
     <script src="http://localhost:35729/livereload.js"></script>
 </body>

@@ -19,5 +19,8 @@ export const Actions = {
     },
     clear() {
         socket.emit('clear')
+    },
+    sendMessage(message) {
+        socket.emit('message', JSON.stringify(message))
     }
 }

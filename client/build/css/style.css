@@ -1,14 +1,14 @@
-/*div#grid-container {
-    float: left
-}*/
-
 body {
-    box-sizing: border-box
+    box-sizing: border-box;
+    width: 80%;
+    margin: auto;
+    padding-top: 10px;
 }
 
 div.canvas-wrapper {
     position: relative;
     height: 100px;
+    margin-top: -10px;
 }
 
 canvas {
@@ -17,7 +17,18 @@ canvas {
     top: 0;
     cursor: pointer;
 }
-/*
-div#chat-container {
-    float: right
-}*/
+
+.messages {
+    height: 500px;
+    border: 1px solid grey;
+    overflow-y: scroll
+}
+
+.sender {
+    margin-top: 10px;
+}
+
+#life-container, #chat-container {
+    width: 50%;
+    float: left
+}
