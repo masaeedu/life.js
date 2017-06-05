@@ -1,14 +1,15 @@
-## LIFE
-It's alive!
+# life.js
+A Game of Life client and server.  Updates are handled on the server and state is tranported to connected clients over a websocket.
 
 ## Installation
-`cd client && npm install && npm run build`
+`npm install`
 
 ## Running
-`cd client && npm run dev-server`
+`npm run server:watch`
 
 ## Building
 `npm run build`
 
 `npm run build:watch`
 
+Running the build script also sets up live reloading, via a Webpack plugin.
