@@ -11,12 +11,22 @@ var io = require('socket.io')(http)
 const n = 100
 let paused = false
 
-function randomCells () {
-    return new Set(new Array(Math.floor((n * n) / 2)).fill(0).map(() => Math.floor((n * n) * Math.random())))
+function until (cond, action) {
+    let status = cond()
+    while(!status) {
+        action()
+        status = cond()
+    }
 }
 
-// try to fill with 50% random indicies, but it makes duplicates so it's only ~35% full
-let cells = randomCells()
+function randomCells (filledFraction) {
+    const result = new Set()
+    const fullEnough = () => result.length >= ((n * n) * filledFraction)
+    until(fullEnough, () => result.add(Math.floor((n * n) * Math.random())))
+    return result
+}
+
+let cells = randomCells(0.5)
 
 const gol = game(n)
 setInterval(() => {
@@ -62,7 +72,8 @@ io.on('connection', function (socket) {
     socket.on('interaction', applyInteraction)
     socket.on('pause', togglePause)
     socket.on('randomFill', () => {
-        cells = randomCells()
+        //TODO: Make this configurable in the UI
+        cells = randomCells(0.5)
     })
     setInterval(() => {
         const updateData = update()
