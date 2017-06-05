@@ -10,7 +10,7 @@ const lifeState = {
 
 export function LifeUI(size) {
     // TODO: singleton antipattern please wire up deps
-    if (!Actions.initialized()) {
+    if (!Actions.initialized) {
         throw Error('No connection.')
     }
 
