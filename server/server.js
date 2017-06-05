@@ -49,7 +49,6 @@ function togglePause() {
 }
 
 function applyInteraction(interactionEvent) {
-    console.log(interactionEvent)
     const event = JSON.parse(interactionEvent)
     if (event.erasing) {
         if (cells.has(event.index)) cells.delete(event.index)
@@ -72,7 +71,6 @@ io.on('connection', function (socket) {
     socket.on('interaction', applyInteraction)
     socket.on('pause', togglePause)
     socket.on('randomFill', (density) => {
-        console.log(density)
         cells = randomCells(density)
     })
     socket.on('clear', () => cells.clear())
