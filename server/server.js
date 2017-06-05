@@ -41,8 +41,8 @@ function togglePause() {
 function applyInteraction(interactionEvent) {
     console.log(interactionEvent)
     const event = JSON.parse(interactionEvent)
-    if (event.erasing && cells.has(event.index)) {
-        cells.delete(event.index)
+    if (event.erasing) {
+        if (cells.has(event.index)) cells.delete(event.index)
     } else {
         cells.add(event.index)
     }
@@ -68,7 +68,7 @@ io.on('connection', function (socket) {
         const updateData = update()
         socket.emit('update', updateData)
     }, 100)
-    socket.emit('start')
+    socket.emit('start', n)
 })
 
 http.listen(3000, function () {
