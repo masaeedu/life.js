@@ -34,7 +34,6 @@ export function LifeUI(size) {
     const drawCell = CellDrawer(config, context)
 
     let lastTime = false
-    let cells = new Set()
 
     function renderLoop(timestamp) {
         if (!lastTime) lastTime = timestamp
