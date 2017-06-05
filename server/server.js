@@ -10,22 +10,28 @@ var io = require('socket.io')(http)
 
 const n = 100
 let paused = false
-const dirty = new Set()
-const cells = new Array(n * n)
-    .fill(undefined)
-    .map(() => Math.round(Math.random()))
+
+function randomCells () {
+    return new Set(new Array(Math.floor((n * n) / 2)).fill(0).map(() => Math.floor((n * n) * Math.random())))
+}
+
+// try to fill with 50% random indicies, but it makes duplicates so it's only ~35% full
+let cells = randomCells()
+
 const gol = game(n)
-setInterval(() => { if (!paused) gol(cells).forEach(i => dirty.add(i)) }, 100)
+setInterval(() => {
+    if (!paused) {
+        cells = gol(cells)
+    }
+}, 100)
 
 function update() {
     const updateData = renderDataToJSON()
-    dirty.forEach(i => cells[i] = !cells[i])
-    dirty.clear()
     return updateData
 }
 
 function renderDataToJSON() {
-    return JSON.stringify({ cells })
+    return JSON.stringify({ cells: [...cells] })
 }
 
 function togglePause() {
@@ -35,7 +41,11 @@ function togglePause() {
 function applyInteraction(interactionEvent) {
     console.log(interactionEvent)
     const event = JSON.parse(interactionEvent)
-    if (cells[event.index] === event.erasing) dirty.add(event.index)
+    if (event.erasing && cells.has(event.index)) {
+        cells.delete(event.index)
+    } else {
+        cells.add(event.index)
+    }
 }
 
 
@@ -51,6 +61,9 @@ io.on('connection', function (socket) {
     socket.on('message', (m) => console.log(m))
     socket.on('interaction', applyInteraction)
     socket.on('pause', togglePause)
+    socket.on('randomFill', () => {
+        cells = randomCells()
+    })
     setInterval(() => {
         const updateData = update()
         socket.emit('update', updateData)

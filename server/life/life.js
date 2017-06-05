@@ -21,7 +21,7 @@ export function game(n) {
         ]
         return neighbors.filter(pair => {
             const [x, y] = pair
-            return cells[n * x + y] && inBounds(x, y)
+            return cells.has(n * x + y) && inBounds(x, y)
         }).length
     }
 
@@ -38,12 +38,12 @@ export function game(n) {
     }
 
     return function update(cells) {
-        const dirty = new Set()
+        const nextCells = new Set()
         for (var i = 0; i < n * n; i++) {
             const point = getCoordinates(i)
-            const nextState = checkForLife(cells[i], point, cells)
-            if (cells[i] !== nextState) dirty.add(i)
+            const nextState = checkForLife(cells.has(i), point, cells)
+            if (nextState) nextCells.add(i)
         }
-        return dirty
+        return nextCells
     }
 }

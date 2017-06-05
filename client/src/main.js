@@ -3,10 +3,11 @@ import { Point, getCoordinatesOfIndex, getIndexOfCoordinates } from '../../share
 
 var socket = io()
 
-let cells = []
+let cells = new Set()
 socket.on('update', (update) => {
   const updateData = JSON.parse(update)
-  cells = updateData.cells
+  cells.clear()
+  cells = new Set([...updateData.cells])
 })
 
 // LOGICAL SIZE
@@ -46,6 +47,11 @@ let paused = false;
 pause.onclick = function () {
   socket.emit('pause')
 };
+
+const randomFill = document.getElementById('random-fill')
+randomFill.onclick = function() {
+  socket.emit('randomFill')
+}
 
 function drawCell(i, fill) {
   const { x, y } = getCoordinates(i);
@@ -90,7 +96,7 @@ function render(timestamp) {
   if (((timestamp - last) / 1000) >= (1 / fpsCap)) {
     ctx.beginPath();
     for (var i = 0; i < n * n; i++) {
-      drawCell(i, cells[i]);
+      drawCell(i, cells.has(i));
     }
     ctx.stroke();
     last = timestamp;
