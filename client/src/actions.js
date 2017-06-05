@@ -16,5 +16,8 @@ export const Actions = {
     },
     randomFill() {
         socket.emit('randomFill')
+    },
+    clear() {
+        socket.emit('clear')
     }
 }

@@ -75,6 +75,7 @@ io.on('connection', function (socket) {
         //TODO: Make this configurable in the UI
         cells = randomCells(0.5)
     })
+    socket.on('clear', () => cells.clear())
     setInterval(() => {
         const updateData = update()
         socket.emit('update', updateData)

@@ -132,11 +132,13 @@ function setupButtons() {
     const erase = document.getElementById('erase')
     const pause = document.getElementById('pause')
     const randomFill = document.getElementById('random-fill')
+    const clear = document.getElementById('clear')
     erase.onchange = function (event) {
         lifeState.erasing = event.target.checked
     }
     pause.onclick = Actions.pause
     randomFill.onclick = Actions.randomFill
+    clear.onclick = Actions.clear
 }
 
 const CellDrawer = ({ inset, cellWidth, getCoordinates }, context) => (index, cellState) => {
