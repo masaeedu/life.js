@@ -10,7 +10,7 @@ var io = require('socket.io')(http)
 
 const n = 100
 
-let updateInterval = 100
+let updateInterval = 10
 let paused = false
 
 function until (cond, action) {
@@ -30,16 +30,21 @@ function randomCells (filledFraction) {
 
 let cells = randomCells(0.5)
 let generations = 0
-let gps = 0
+
+let ups = 0 // updates per second, not accounting for the updateInterval
+
+let lastGeneration = Date.now()
+let gps = 0 // generations per second, accounts for interval
 
 const gol = game(n)
 setInterval(() => {
     if (!paused) {
-        let now = Date.now()
+        gps = Math.round(1000 / (Date.now() - lastGeneration))
+        lastGeneration = Date.now()
+        let preUpdate = Date.now()
         cells = gol(cells)
         generations += 1
-        let updateTime = Date.now() - now
-        gps = 1000 / (updateTime)
+        ups = Math.round(1000 / (Date.now() - preUpdate))
     }
 }, updateInterval)
 
@@ -51,8 +56,7 @@ function update() {
 function renderDataToJSON() {
     return JSON.stringify({
         cells: [...cells],
-        gps,
-        generations
+        stats: { gps, ups, generations}
     })
 }
 

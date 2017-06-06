@@ -14,6 +14,7 @@ function run(size) {
     socket.on('update', event => {
       const updateData = JSON.parse(event)
       lifeUI.updateCells(updateData.cells)
+      lifeUI.updateStats(updateData.stats)
     })
 
     socket.on('message', event => {

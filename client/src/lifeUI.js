@@ -17,7 +17,7 @@ export function LifeUI(size) {
 
     const config = {
         size,
-        fpsCap: 30,
+        fpsCap: 60,
         cellWidth: 5,
         inset: 10,
         getIndex: getIndexOfCoordinates(size),
@@ -31,12 +31,12 @@ export function LifeUI(size) {
 
     const drawCell = CellDrawer(config, context)
 
-    let lastTime = false
+    let lastTime, fps
 
     function renderLoop(timestamp) {
         if (!lastTime) lastTime = timestamp
-
-        if (((timestamp - lastTime) / 1000) >= (1 / config.fpsCap)) {
+        fps = 1000 / (timestamp - lastTime)
+        if (fps <= config.fpsCap) {
             context.beginPath()
             for (let i = 0; i < size * size; i++) {
                 drawCell(i, lifeState.cells.has(i))
@@ -52,6 +52,10 @@ export function LifeUI(size) {
         updateCells(newCells) {
             lifeState.cells.clear()
             lifeState.cells = new Set([...newCells])
+        },
+        updateStats(stats) {
+            stats.fps = Math.round(fps)
+            console.log(stats)
         }
     }
 }
