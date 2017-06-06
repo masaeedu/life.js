@@ -9,6 +9,8 @@ var http = require('http').Server(app)
 var io = require('socket.io')(http)
 
 const n = 100
+
+let updateInterval = 100
 let paused = false
 
 function until (cond, action) {
@@ -33,7 +35,7 @@ setInterval(() => {
     if (!paused) {
         cells = gol(cells)
     }
-}, 100)
+}, updateInterval)
 
 function update() {
     const updateData = renderDataToJSON()
@@ -80,7 +82,7 @@ io.on('connection', function (socket) {
     setInterval(() => {
         const updateData = update()
         socket.emit('update', updateData)
-    }, 100)
+    }, updateInterval)
     socket.emit('start', n)
 })
 
