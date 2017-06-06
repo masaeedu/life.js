@@ -1,8 +1,21 @@
-// need a life object
-// it needs to expose a step function that returns a set of cells to update
-// it needs to expose a function that can add cells to the set of updates (use input)
-// expose a function that creates a grid
+import { any, equals } from 'ramda'
+
 import { Point, getCoordinatesOfIndex, getIndexOfCoordinates } from '../../shared/coordinates'
+
+function Ruleset(born, survives) {
+    return (alive, neighbors) => {
+        if (!alive) {
+            return any(equals(neighbors), born)
+        }
+        if (alive) {
+            return any(equals(neighbors), survives)
+        }
+        return false
+    }
+}
+
+const gameOfLife = Ruleset([3], [2, 3])
+const highLife = Ruleset([3, 6], [2, 3])
 
 export function game(n) {
     const getCoordinates = getCoordinatesOfIndex(n)
@@ -32,9 +45,7 @@ export function game(n) {
 
     function checkForLife(cellState, point, cells) {
         const neighbors = liveNeighbors(point, cells)
-        if (cellState && (neighbors === 2 || neighbors === 3)) return true
-        if (!cellState && (neighbors === 3)) return true
-        return false
+        return gameOfLife(cellState, neighbors)
     }
 
     return function update(cells) {
