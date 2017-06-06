@@ -91,7 +91,7 @@ io.on('connection', function (socket) {
     })
     socket.on('clear', () => cells.clear())
     socket.on('message', (message) => {
-        socket.emit('message', message)
+        io.emit('message', message)
     })
     setInterval(() => {
         const updateData = update()
