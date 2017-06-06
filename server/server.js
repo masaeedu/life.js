@@ -29,11 +29,17 @@ function randomCells (filledFraction) {
 }
 
 let cells = randomCells(0.5)
+let generations = 0
+let gps = 0
 
 const gol = game(n)
 setInterval(() => {
     if (!paused) {
+        let now = Date.now()
         cells = gol(cells)
+        generations += 1
+        let updateTime = Date.now() - now
+        gps = 1000 / (updateTime)
     }
 }, updateInterval)
 
@@ -43,7 +49,11 @@ function update() {
 }
 
 function renderDataToJSON() {
-    return JSON.stringify({ cells: [...cells] })
+    return JSON.stringify({
+        cells: [...cells],
+        gps,
+        generations
+    })
 }
 
 function togglePause() {
