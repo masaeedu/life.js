@@ -88,7 +88,7 @@ function setupCanvas(config) {
     }
 }
 
-function strokeGrid({size, inset, cellWidth, canvasWidth}, context) {
+function strokeGrid({ size, inset, cellWidth, canvasWidth }, context) {
     context.strokeStyle = "#4d4d4d"
     context.beginPath()
     range(0, size + 1).forEach(i => {

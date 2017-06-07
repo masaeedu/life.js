@@ -22,7 +22,7 @@ export function ChatUI() {
     function sendMessage() {
         const content = messageInput.value.trim()
         if (content !== '') {
-            Actions.sendMessage({content, name: chatState.name})
+            Actions.sendMessage({ content, name: chatState.name })
         }
     }
 

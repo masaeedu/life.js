@@ -13,15 +13,15 @@ const n = 100
 let updateInterval = 10
 let paused = false
 
-function until (cond, action) {
+function until(cond, action) {
     let status = cond()
-    while(!status) {
+    while (!status) {
         action()
         status = cond()
     }
 }
 
-function randomCells (filledFraction) {
+function randomCells(filledFraction) {
     const result = new Set()
     const fullEnough = () => result.size >= ((n * n) * filledFraction)
     until(fullEnough, () => result.add(Math.floor((n * n) * Math.random())))
@@ -56,7 +56,7 @@ function update() {
 function renderDataToJSON() {
     return JSON.stringify({
         cells: [...cells],
-        stats: { gps, ups, generations}
+        stats: { gps, ups, generations }
     })
 }
 

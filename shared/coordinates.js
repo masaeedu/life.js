@@ -1,7 +1,7 @@
 import { curry } from 'ramda'
 
 function Point(x, y) {
-    return {x, y}
+    return { x, y }
 }
 
 const getCoordinatesOfIndex = curry((size, i) => {

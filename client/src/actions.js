@@ -4,14 +4,14 @@ export const Actions = {
     get initialized() {
         return socket && socket.connected
     },
-    initialize (sock, callback) {
+    initialize(sock, callback) {
         socket = sock
         callback()
     },
-    pause () {
+    pause() {
         socket.emit('pause')
     },
-    draw (data) {
+    draw(data) {
         socket.emit('interaction', JSON.stringify(data))
     },
     randomFill(fillDensity) {
