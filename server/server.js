@@ -10,7 +10,7 @@ var io = require('socket.io')(http)
 
 const n = 100
 
-let updateInterval = 10
+let updateInterval = 100
 let paused = false
 
 function until(cond, action) {

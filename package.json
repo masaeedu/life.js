@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "build:watch": "webpack --watch",
-    "server:watch": "nodemon server/server.js --exec babel-node --presets es2015,stage-2 --source-maps"
+    "server:watch": "nodemon --inspect server/server.js --exec babel-node --presets es2015,stage-2 --source-maps"
   },
   "contributors": [
     "Asad Saeduddin",
